@@ -1,8 +1,8 @@
 import { Client, TablesDB, Query, ID } from "appwrite";
 
-const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
-const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT;
-const DB_ID = import.meta.env.VITE_APPWRITE_DB_ID;
+const PROJECT_ID = process.env.VITE_APPWRITE_PROJECT_ID;
+const ENDPOINT = process.env.VITE_APPWRITE_ENDPOINT;
+const DB_ID = process.env.VITE_APPWRITE_DB_ID;
 
 const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
 
