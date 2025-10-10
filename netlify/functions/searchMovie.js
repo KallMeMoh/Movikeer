@@ -1,4 +1,4 @@
-import { updateSearchCount } from "../../src/appwrite";
+import { updateSearchCount } from "../../utils/appwrite";
 
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = process.env.TMDB_API_URL;

@@ -1,4 +1,4 @@
-import { getTrendingMovies } from "../../src/appwrite";
+import { getTrendingMovies } from "../../utils/appwrite";
 
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = process.env.TMDB_API_URL;
