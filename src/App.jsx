@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import SearchBar from "./components/SearchBar.jsx";
 import MovieCard from './components/MovieCard.jsx';
 import { useDebounce } from 'react-use';
-import { getTrendingMovies, updateSearchCount } from './appwrite.js';
 
 const BASE_URL = import.meta.env.VITE_TMDB_API_URL;
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -23,29 +22,20 @@ const App = () => {
     setErrorMsg('');
     
     try {
-      const api = query
-        ? `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-        : `${BASE_URL}/discover/movie?sort_by=popularity.desc`;
-
-      const res = await fetch(api, {
+      const endpoint = `/.netlify/functions/${query ? `searchMovie?query=${encodeURIComponent(query)}` : 'movies'}`;
+      const res = await fetch(endpoint, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${API_KEY}`,
         }
       });
+
+      if (!res.ok) 
+        throw new Error('Please check your internet connection and try again later!');
+
+      const data = await res.json();
       
-      if (!res.ok) throw new Error("Failed to fetch movies");
-      
-      const payload = await res.json();
-      
-      if (payload.Response === 'False') throw new Error(payload.Error || 'Failed to fetch movies');
-      
-      setMovies(payload.results || []);
-      
-      if (query && payload.results.length > 0) 
-        await updateSearchCount(query, payload.results[0]);
+      setMovies(data.results || []);
     } catch (e) {
       setErrorMsg(e.message)
     } finally {
@@ -55,20 +45,30 @@ const App = () => {
 
   const loadTrendingMovies = async () => {
     try {
-      const trendingMovies = await getTrendingMovies();
+      const res = await fetch('/.netlify/functions/trending', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        }
+      });
 
-      setTrendingMovies(trendingMovies);
+      if (!res.ok) 
+        throw new Error('Please check your internet connection and try again later!');
+
+      const data = await res.json();
+
+      setTrendingMovies(data);
     } catch (e) {
       console.error(e);
       // setErrorMsg(e.message)
     }
   }
   
+  useEffect(()=> {loadTrendingMovies()}, []);
+  
   useEffect(() => {
     fetchMovies(debouncedQuery);
   }, [debouncedQuery]);
-
-  useEffect(()=> {loadTrendingMovies()}, []);
   
   return (
     <main>

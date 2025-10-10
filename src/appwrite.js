@@ -59,5 +59,6 @@ export const getTrendingMovies = async () => {
     return results.rows;
   } catch (e) {
     console.log(e);
+    return [];
   }
 }
