@@ -5,8 +5,8 @@ const BASE_URL = process.env.TMDB_API_URL;
 
 export async function handler(event, context) {
   try {
-    const { query } = event.queryStringParameters;
-    const res = await fetch(`${BASE_URL}/search/movie?query=${encodeURIComponent(query)}`, {
+    const { query, page } = event.queryStringParameters;
+    const res = await fetch(`${BASE_URL}/search/movie?query=${encodeURIComponent(query)}${page?`&page=${page}`:''}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -20,7 +20,7 @@ export async function handler(event, context) {
     const payload = await res.json();
   
     if (payload.success === false) 
-      throw new Error("Failed to fetch movies!");
+      throw new Error(payload.status_message)
 
     if (query && payload.results.length > 0) 
       await updateSearchCount(query, payload.results[0]);
