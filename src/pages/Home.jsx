@@ -5,7 +5,7 @@ import { useDebounce } from 'react-use';
 import Pagination from "../components/Pagination.jsx";
 
 const Home = () => {
-  const [page, setPage] = useState(500);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [movies, setMovies] = useState(['']);
